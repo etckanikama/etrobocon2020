@@ -1,6 +1,8 @@
 #include "MotionSequencer.h"
 #include <vector>
 
+/* public: ------------------------------------------------------*/
+
 MotionSequencer::MotionSequencer(Controller& ctrler_, bool isLeftCource_)
   : ctrler(ctrler_),
     linear(ctrler_),
@@ -14,17 +16,24 @@ MotionSequencer::MotionSequencer(Controller& ctrler_, bool isLeftCource_)
   stateMachine[4] = cb_mid2Mid;
 }
 
-void MotionSequencer::route2Motion(std::vector<std::vector<int>>& route, Direction direction) {}
-
-void MotionSequencer::vectordiff(vector<vector<int>>& c8es_)
+void MotionSequencer::route2Motion(std::vector<std::vector<int>>& route, 
+                                  Direction direction)
 {
-  // c8es_[n][n] = {{x0, y0}, {x1, y1}, ... , {xn, yn}}
-  for(int i = 0; i <= c8es_.at(0).size(); i++) {  // 横の配列読み取り
 
-    for(int j = 0; j <= c8es_.size(); j++) {  // 縦の配列読み取り
+}
 
-      MotionSequencer::y_diff.push_back(c8es_[i + 1][j] - c8es_[i][j]);
-      MotionSequencer::x_diff.push_back(c8es_[j][i + 1] - c8es_[j][i]);
+
+/* private ------------------------------------------------------*/
+
+void MotionSequencer::vectordiff(vector<vector<int>>& route)
+{
+  // route[n][n] = {{x0, y0}, {x1, y1}, ... , {xn, yn}}
+  for(int i = 0; i <= route.at(0).size(); i++) {  // 横の配列読み取り
+
+    for(int j = 0; j <= route.size(); j++) {  // 縦の配列読み取り
+
+      MotionSequencer::y_diff.push_back(route[i + 1][j] - route[i][j]);
+      MotionSequencer::x_diff.push_back(route[j][i + 1] - route[j][i]);
     }
   }
 }
@@ -51,7 +60,7 @@ Direction MotionSequencer::vector2direction(std::vector<int> x_diff, std::vector
 
 // 方向から角度を出す関数(ひとつ前の方向をどう保持するか) むずかしいな。
 Direction MotionSequencer::direction2angle(std::vector<int> x_diff, std::vector<int> y_diff,
-                                           Direction direct_)  // 北
+                                           Direction direction)  // 北
 {
   // よくわかりません
 
@@ -70,7 +79,8 @@ Direction MotionSequencer::direction2angle(std::vector<int> x_diff, std::vector<
 
 void MotionSequencer::move(Scines scine_)
 {
-  // stateMachine[scine_]();
+  int callbackSelector = static_cast<int>scine_;
+  stateMachine[ callbackSelector ]();
 }
 
 //
